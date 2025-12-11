@@ -1,0 +1,45 @@
+name: ZAP Simple POST Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  zap-post-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ensure folders exist
+        run: mkdir -p zap-output zap-requests
+
+      - name: Confirm request file exists
+        run: |
+          echo "=== Contents of zap-requests/post-feedback.txt ==="
+          cat zap-requests/post-feedback.txt
+
+      - name: Run ZAP with your POST request
+        run: |
+          docker run --rm \
+            -v "$(pwd)":/zap/wrk \
+            ghcr.io/zaproxy/zaproxy:stable \
+            python3 /zap/zap-baseline.py \
+              -t https://demo.testfire.net \
+              -z "requestfile=/zap/wrk/zap-requests/post-feedback.txt" \
+              -r /zap/wrk/zap-output/zap-report.html \
+              -J /zap/wrk/zap-output/zap-report.json \
+              -I \
+              -d
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-html-report
+          path: zap-output/zap-report.html
+
+      - name: Upload JSON Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-json-report
+          path: zap-output/zap-report.json
