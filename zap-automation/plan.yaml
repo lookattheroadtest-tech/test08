@@ -1,0 +1,28 @@
+env:
+  contexts:
+    - name: test-context
+      urls:
+        - https://demo.testfire.net
+
+jobs:
+  - type: requestor
+    name: send-post
+    parameters:
+      delayInSeconds: 1
+    requests:
+      - url: https://demo.testfire.net/api/feedback/submit
+        method: POST
+        headers:
+          Content-Type: application/json
+          accept: application/json
+        body: >
+          { "name": "J Smith", "email": "jsmtih@altoromutual.com",
+            "subject": "Amazing web design",
+            "message": "I like the new look of your applicaiton" }
+
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 100
+
+  - type: passiveScan
+    name: run-passive
