@@ -1,0 +1,5 @@
+POST https://demo.testfire.net/api/feedback/submit
+accept: application/json
+Content-Type: application/json
+
+{ "name": "J Smith", "email": "jsmtih@altoromutual.com", "subject": "Amazing web design", "message": "I like the new look of your applicaiton" }
